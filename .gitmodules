@@ -1,0 +1,3 @@
+[submodule "mediacms"]
+	path = mediacms
+	url = https://github.com/mediacms-io/mediacms

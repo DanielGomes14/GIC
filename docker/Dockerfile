@@ -1,0 +1,39 @@
+FROM python:3.8-slim-buster
+SHELL ["/bin/bash", "-c"]
+
+# Set up virtualenv
+ENV VIRTUAL_ENV=/home/mediacms.io
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+ENV PIP_NO_CACHE_DIR=1
+
+RUN mkdir -p /home/mediacms.io/mediacms/{logs} && cd /home/mediacms.io && python3 -m venv $VIRTUAL_ENV
+
+# Install dependencies:
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+#Setup working directory
+COPY . /home/mediacms.io/mediacms
+WORKDIR /home/mediacms.io/mediacms
+
+
+#Install Bento4
+RUN wget -q http://zebulon.bok.net/Bento4/binaries/Bento4-SDK-1-6-0-637.x86_64-unknown-linux.zip && \
+    unzip Bento4-SDK-1-6-0-637.x86_64-unknown-linux.zip -d ../bento4 && \
+    mv ../bento4/Bento4-SDK-1-6-0-637.x86_64-unknown-linux/* ../bento4/ && \
+    rm -rf ../bento4/Bento4-SDK-1-6-0-637.x86_64-unknown-linux && \
+    rm -rf ../bento4/docs && \
+    rm Bento4-SDK-1-6-0-637.x86_64-unknown-linux.zip
+
+#Install ffmpeg
+RUN wget -q https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz && \
+    mkdir -p ffmpeg-tmp && \
+    tar -xf ffmpeg-release-amd64-static.tar.xz --strip-components 1 -C ffmpeg-tmp && \
+    cp -v ffmpeg-tmp/ffmpeg ffmpeg-tmp/ffprobe ffmpeg-tmp/qt-faststart /usr/local/bin && \
+    rm -rf ffmpeg-tmp ffmpeg-release-amd64-static.tar.xz
+
+EXPOSE 9000 80
+
+RUN chmod +x ./entrypoint.sh
+
+ENTRYPOINT ["./entrypoint.sh"]

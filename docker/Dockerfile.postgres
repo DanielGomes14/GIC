@@ -19,6 +19,8 @@ RUN mkdir /var/lib/postgresql/data && \
     psql -c "CREATE USER mediacms WITH ENCRYPTED PASSWORD 'mediacms'" && \
     psql -c "GRANT ALL PRIVILEGES ON DATABASE mediacms TO mediacms"
 
+VOLUME /var/lib/postgresql/data
+
 EXPOSE 5432
 
 CMD ["postgres"]

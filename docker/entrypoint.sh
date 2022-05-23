@@ -4,7 +4,7 @@
 
 echo "Waiting for Postgres to Start..."
 
-while ! nc -z $POSTGRES_SERVICE_NAME 5432; do
+while ! nc -z db 5432; do
   sleep 0.1
 done
 echo "Postgres started"
@@ -13,15 +13,20 @@ echo "Postgres started"
 echo "Waiting for Redis is running..."
 
 
-while ! nc -z $REDIS_SERVICE_NAME 5672; do
+while ! nc -z redis 6379; do
   sleep 0.1
 done
 echo "Redis started"
 
+cd mediacmsfiles
 #TODO: Remove secrets from here!!
 RANDOM_ADMIN_PASS=`python -c "import secrets;chars = 'abcdefghijklmnopqrstuvwxyz0123456789';print(''.join(secrets.choice(chars) for i in range(10)))"`
 
 ADMIN_PASSWORD=${ADMIN_PASSWORD:-$RANDOM_ADMIN_PASS}
+
+
+echo $(pwd)
+echo $(ls)
 
 echo "Running migrations service"
 python manage.py migrate
@@ -47,4 +52,5 @@ echo "RUNNING COLLECTSTATIC"
 python manage.py collectstatic --noinput
 
 echo "Starting wsgi...."
-/home/mediacms.io/bin/uwsgi --ini /home/mediacms.io/mediacms/deploy/docker/uwsgi.ini
+echo $(ls /home/mediacms.io/mediacms/deploy/docker)
+uwsgi --ini /home/mediacms.io/mediacms/mediacmsfiles/deploy/docker/uwsgi.ini

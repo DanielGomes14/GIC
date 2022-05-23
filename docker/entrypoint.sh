@@ -25,9 +25,6 @@ RANDOM_ADMIN_PASS=`python -c "import secrets;chars = 'abcdefghijklmnopqrstuvwxyz
 ADMIN_PASSWORD=${ADMIN_PASSWORD:-$RANDOM_ADMIN_PASS}
 
 
-echo $(pwd)
-echo $(ls)
-
 echo "Running migrations service"
 python manage.py migrate
 EXISTING_INSTALLATION=`echo "from users.models import User; print(User.objects.exists())" |python manage.py shell`
@@ -52,5 +49,4 @@ echo "RUNNING COLLECTSTATIC"
 python manage.py collectstatic --noinput
 
 echo "Starting wsgi...."
-echo $(ls /home/mediacms.io/mediacms/deploy/docker)
 uwsgi --ini /home/mediacms.io/mediacms/mediacmsfiles/deploy/docker/uwsgi.ini

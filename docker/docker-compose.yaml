@@ -7,7 +7,7 @@ services:
         ports:
             - 80:80
         volumes:
-            - ./www:/var/www
+            - ./mediacmsfiles/static:/var/www/static
     db:
         build: 
             context: .

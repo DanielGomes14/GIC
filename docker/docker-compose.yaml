@@ -7,7 +7,7 @@ services:
         ports:
             - 80:80
         volumes:
-            - ./www:/var/www
+            - ./mediacmsfiles/static:/var/www/static
     db:
         build: 
             context: .
@@ -30,10 +30,36 @@ services:
             - 9000:9000
         volumes:
             - ./:/home/mediacms.io/mediacms/
+        environment:
+            ADMIN_USER: 'admin'
+            ADMIN_EMAIL: 'admin@localhost'
         depends_on:
             - redis
             - db
-
+    celery_beat:
+        build: 
+            context: .
+            dockerfile: Dockerfile
+        command: >
+            bash -c "
+            celery -A cms beat -l info
+            && celery -A files beat -l info"
+        volumes:
+            - ./:/home/mediacms.io/mediacms/
+        depends_on:
+            - redis
+    celery_worker:
+        build: 
+            context: .
+            dockerfile: Dockerfile
+        command: >
+            bash -c "
+            celery -A cms worker -l info
+            && celery -A files worker -l info"
+        deploy:
+            replicas: 1
+        volumes:
+            - ./:/home/mediacms.io/mediacms/
 volumes:
     www:
 

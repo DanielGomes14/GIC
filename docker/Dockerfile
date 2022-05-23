@@ -1,13 +1,13 @@
-FROM python:3.8-slim-buster
+FROM python:3.8-buster
 SHELL ["/bin/bash", "-c"]
 
 # Set up virtualenv
-ENV VIRTUAL_ENV=/home/mediacms.io
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-ENV PIP_NO_CACHE_DIR=1
+#ENV VIRTUAL_ENV=/home/mediacms.io
+#ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+#ENV PIP_NO_CACHE_DIR=1
 
-RUN mkdir -p /home/mediacms.io/mediacms/{logs} && cd /home/mediacms.io && python3 -m venv $VIRTUAL_ENV
-
+RUN mkdir -p /home/mediacms.io/mediacms/{logs} && cd /home/mediacms.io
+#RUN apt-get install python3-dev && apt-get install gcc && libc-dev
 # Install dependencies:
 COPY requirements.txt .
 RUN pip install -r requirements.txt
@@ -33,7 +33,7 @@ RUN wget -q https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-stati
     rm -rf ffmpeg-tmp ffmpeg-release-amd64-static.tar.xz
 
 EXPOSE 9000 80
-
+COPY entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
 
 ENTRYPOINT ["./entrypoint.sh"]

@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+    nginx:
+        build: 
+            context: .
+            dockerfile: Dockerfile.nginx
+        ports:
+            - 80:80
+        volumes:
+            - ./www:/var/www
+    db:
+        build: 
+            context: .
+            dockerfile: Dockerfile.postgres
+        restart: always
+    redis:
+        build: 
+            context: .
+            dockerfile: Dockerfile.redis
+        restart: always
+    web:
+        build: 
+            context: .
+            dockerfile: Dockerfile
+        deploy:
+            replicas: 1
+        ports:
+            - "9000:9000"
+        volumes:
+            - ./:/home/mediacms.io/mediacms/
+        depends_on:
+            - redis
+            - db
+
+volumes:
+    www:
+

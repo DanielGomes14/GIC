@@ -40,10 +40,8 @@ services:
         build: 
             context: .
             dockerfile: Dockerfile
-        command: >
-            bash -c "
-            celery -A cms beat -l info
-            && celery -A files beat -l info"
+        command: celery -A cms beat -l info
+        # command: celery -A files beat -l info
         volumes:
             - ./:/home/mediacms.io/mediacms/
         depends_on:
@@ -52,14 +50,15 @@ services:
         build: 
             context: .
             dockerfile: Dockerfile
-        command: >
-            bash -c "
-            celery -A cms worker -l info
-            && celery -A files worker -l info"
+        command: celery -A cms worker -l info
+        # command: celery -A files worker -l info
         deploy:
             replicas: 1
         volumes:
             - ./:/home/mediacms.io/mediacms/
+        depends_on:
+            - web
+            - redis
 volumes:
     www:
 

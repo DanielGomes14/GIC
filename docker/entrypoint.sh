@@ -19,6 +19,9 @@ done
 echo "Redis started"
 
 cd mediacmsfiles
+mkdir logs
+mkdir pids
+
 #TODO: Remove secrets from here!!
 RANDOM_ADMIN_PASS=`python -c "import secrets;chars = 'abcdefghijklmnopqrstuvwxyz0123456789';print(''.join(secrets.choice(chars) for i in range(10)))"`
 
@@ -50,3 +53,31 @@ python manage.py collectstatic --noinput
 
 echo "Starting wsgi...."
 uwsgi --ini /home/mediacms.io/mediacms/mediacmsfiles/deploy/docker/uwsgi.ini
+
+
+APP_DIR="/home/mediacms.io/mediacms/mediacmsfiles"
+CELERY_APP="cms"
+CELERYD_LOG_LEVEL="INFO"
+
+CELERYD_NODES="short1 short2"
+CELERY_QUEUE="short_tasks"
+CELERYD_OPTS="--soft-time-limit=300 -c10"
+CELERYD_PID_FILE="/home/mediacms.io/mediacms/mediacmsfiles/pids/%n.pid"
+CELERYD_LOG_FILE="/home/mediacms.io/mediacms/mediacmsfiles/logs/%N.log"
+
+celery multi start ${CELERYD_NODES} -A ${CELERY_APP} --pidfile=${CELERYD_PID_FILE} --logfile=${CELERYD_LOG_FILE} --loglevel=${CELERYD_LOG_LEVEL} ${CELERYD_OPTS} --workdir=${APP_DIR} -Q ${CELERY_QUEUE}
+
+
+CELERYD_NODES="long1"
+CELERY_QUEUE="long_tasks"
+CELERYD_OPTS="-Ofair --prefetch-multiplier=1"
+CELERYD_PID_FILE="/home/mediacms.io/mediacms/mediacmsfiles/pids/%n.pid"
+CELERYD_LOG_FILE="/home/mediacms.io/mediacms/mediacmsfiles/logs/%N.log"
+
+celery multi start ${CELERYD_NODES} -A ${CELERY_APP} --pidfile=${CELERYD_PID_FILE} --logfile=${CELERYD_LOG_FILE} --loglevel=${CELERYD_LOG_LEVEL} ${CELERYD_OPTS} --workdir=${APP_DIR} -Q ${CELERY_QUEUE}
+
+
+CELERYD_PID_FILE="/home/mediacms.io/mediacms/mediacmsfiles/pids/beat%n.pid"
+CELERYD_LOG_FILE="/home/mediacms.io/mediacms/mediacmsfiles/logs/beat%N.log"
+
+celery beat -A ${CELERY_APP} --pidfile=${CELERYD_PID_FILE} --logfile=${CELERYD_LOG_FILE} --loglevel=${CELERYD_LOG_LEVEL} ${CELERYD_OPTS} --workdir=${APP_DIR}

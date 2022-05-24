@@ -47,37 +47,28 @@ else
     echo "Created admin user with password: $ADMIN_PASSWORD"
 
 fi
-echo "RUNNING COLLECTSTATIC"
 
+echo "Running collectstatic"
 python manage.py collectstatic --noinput
 
-echo "Starting wsgi...."
+
+# if [ X"$ENABLE_UWSGI" = X"yes" ] ; then
+#     echo "Enabling uwsgi app server"
+    
+# fi
+
+
+if [ X"$ENABLE_CELERY_BEAT" = X"yes" ] ; then
+    echo "Enabling celery-beat scheduling server"
+    celery beat -A cms --pidfile=/home/mediacms.io/mediacms/mediacmsfiles/pids/beat%n.pid --logfile=/home/mediacms.io/mediacms/mediacmsfiles/logs/beat%N.log --loglevel=INFO --workdir=/home/mediacms.io/mediacms/mediacmsfiles
+fi
+
+if [ X"$ENABLE_CELERY_WORKER" = X"yes" ] ; then
+    echo "Enabling celery-short task worker"
+    celery multi start short1 short2 -A cms --pidfile=/home/mediacms.io/mediacms/mediacmsfiles/pids/%n.pid --logfile=/home/mediacms.io/mediacms/mediacmsfiles/logs/%N.log --loglevel=INFO --soft-time-limit=300 -c10 --workdir=/home/mediacms.io/mediacms/mediacmsfiles -Q short_tasks
+    
+    echo "Enabling celery-long task worker"
+    celery multi start long1 -A cms --pidfile=/home/mediacms.io/mediacms/mediacmsfiles/pids/%n.pid --logfile=/home/mediacms.io/mediacms/mediacmsfiles/logs/%N.log --loglevel=INFO -Ofair --prefetch-multiplier=1 --workdir=/home/mediacms.io/mediacms/mediacmsfiles -Q long_tasks
+fi
+
 uwsgi --ini /home/mediacms.io/mediacms/mediacmsfiles/deploy/docker/uwsgi.ini
-
-
-APP_DIR="/home/mediacms.io/mediacms/mediacmsfiles"
-CELERY_APP="cms"
-CELERYD_LOG_LEVEL="INFO"
-
-CELERYD_NODES="short1 short2"
-CELERY_QUEUE="short_tasks"
-CELERYD_OPTS="--soft-time-limit=300 -c10"
-CELERYD_PID_FILE="/home/mediacms.io/mediacms/mediacmsfiles/pids/%n.pid"
-CELERYD_LOG_FILE="/home/mediacms.io/mediacms/mediacmsfiles/logs/%N.log"
-
-celery multi start ${CELERYD_NODES} -A ${CELERY_APP} --pidfile=${CELERYD_PID_FILE} --logfile=${CELERYD_LOG_FILE} --loglevel=${CELERYD_LOG_LEVEL} ${CELERYD_OPTS} --workdir=${APP_DIR} -Q ${CELERY_QUEUE}
-
-
-CELERYD_NODES="long1"
-CELERY_QUEUE="long_tasks"
-CELERYD_OPTS="-Ofair --prefetch-multiplier=1"
-CELERYD_PID_FILE="/home/mediacms.io/mediacms/mediacmsfiles/pids/%n.pid"
-CELERYD_LOG_FILE="/home/mediacms.io/mediacms/mediacmsfiles/logs/%N.log"
-
-celery multi start ${CELERYD_NODES} -A ${CELERY_APP} --pidfile=${CELERYD_PID_FILE} --logfile=${CELERYD_LOG_FILE} --loglevel=${CELERYD_LOG_LEVEL} ${CELERYD_OPTS} --workdir=${APP_DIR} -Q ${CELERY_QUEUE}
-
-
-CELERYD_PID_FILE="/home/mediacms.io/mediacms/mediacmsfiles/pids/beat%n.pid"
-CELERYD_LOG_FILE="/home/mediacms.io/mediacms/mediacmsfiles/logs/beat%N.log"
-
-celery beat -A ${CELERY_APP} --pidfile=${CELERYD_PID_FILE} --logfile=${CELERYD_LOG_FILE} --loglevel=${CELERYD_LOG_LEVEL} ${CELERYD_OPTS} --workdir=${APP_DIR}

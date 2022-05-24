@@ -1,0 +1,82 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: gic3
+  labels:
+    app: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: registry.deti:5000/postgresgic3:latest
+        imagePullPolicy: Always 
+        env:
+          - name: POSTGRES_HOST_AUTH_METHOD
+            value: trust
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: prod-db-secret
+                key: username 
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: prod-db-secret
+                key: password 
+          - name: POSTGRES_DB
+            value: mediacms   
+        volumeMounts:
+          - mountPath: /data
+            name: pg-data
+      
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5432
+      volumes:
+        - name: pg-data
+          persistentVolumeClaim:
+            claimName: pg-data-pvc
+
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pg-data-pvc
+  namespace: gic3
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 10Mi
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-svc
+  namespace: gic3
+  labels:
+    app: postgres
+spec:
+  ports:
+      - port: 5432
+        targetPort: 5432
+  selector:
+      app: postgres

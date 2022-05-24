@@ -57,7 +57,7 @@ data:
             error_log /var/log/nginx/mediacms.io.error.log warn;
 
             location /static {
-                alias /var/www/static;
+                alias /home/mediacms.io/mediacms/static;
             }
 
             # location /media/original {

@@ -45,23 +45,19 @@ spec:
           - name: POSTGRES_HOST
             value: postgres-svc
           - name: REDIS_LOCATION
-            value: redis-svc   
+            value: redis   
         ports:
           - name: web
             containerPort: 80
           - name: uwsgi
             containerPort: 9000
-      #   volumeMounts:
-      #        - name: local-settings
-      #          mountPath: /mediacmsfiles/deploy/local-settings.py
-      #          subPath: local-settings.py
-      # volumes:
-      #   - name: local-settings
-      #     configMap:
-      #       name: local-settings
-      #       items:
-      #         - key: local_settings.py
-      #           path: local-settings.py
+        volumeMounts:
+          - mountPath: /home/mediacms.io/mediacms/static
+            name: staticfiles
+      volumes:
+        - name: staticfiles
+          persistentVolumeClaim:
+            claimName: staticfilespvc
 
 # Create Service for APP
 ---

@@ -45,4 +45,6 @@ EXPOSE 9000 80
 ADD entrypoint.sh .
 RUN chmod +x ./entrypoint.sh
 
+VOLUME /static
+
 ENTRYPOINT ["/home/mediacms.io/mediacms/entrypoint.sh"]

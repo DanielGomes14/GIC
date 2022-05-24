@@ -144,7 +144,7 @@ STATIC_URL = "/static/"  # where js/css files are stored on the filesystem
 MEDIA_URL = "/media/"  # URL where static files are served from the server
 STATIC_ROOT = BASE_DIR + "/static/"
 # where uploaded + encoded media are stored
-MEDIA_ROOT = BASE_DIR + "/static/media_files/"
+MEDIA_ROOT = BASE_DIR + "/media_files/"
 
 # these used to be os.path.join(MEDIA_ROOT, "folder/") but update to
 # Django 3.1.9 requires not absolute paths to be utilized...
@@ -204,10 +204,10 @@ CHUNKS_DONE_PARAM_NAME = "done"
 FILE_STORAGE = "django.core.files.storage.DefaultStorage"
 
 X_FRAME_OPTIONS = "ALLOWALL"
-EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
-CELERY_EMAIL_TASK_CONFIG = {
-    "queue": "short_tasks",
-}
+# EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
+# CELERY_EMAIL_TASK_CONFIG = {
+#     "queue": "short_tasks",
+# }
 
 POST_UPLOAD_AUTHOR_MESSAGE_UNLISTED_NO_COMMENTARY = ""
 # a message to be shown on the author of a media file and only
@@ -217,7 +217,7 @@ POST_UPLOAD_AUTHOR_MESSAGE_UNLISTED_NO_COMMENTARY = ""
 CANNOT_ADD_MEDIA_MESSAGE = ""
 
 # mp4hls command, part of Bendo4
-MP4HLS_COMMAND = "/home/mediacms.io/mediacms/Bento4-SDK-1-6-0-637.x86_64-unknown-linux/bin/mp4hls"
+MP4HLS_COMMAND = "/home/mediacms.io/bento4/bin/mp4hls"
 
 # highly experimental, related with remote workers
 ADMIN_TOKEN = "c2b8e1838b6128asd333ddc5e24"
@@ -293,7 +293,7 @@ INSTALLED_APPS = [
     "mptt",
     "crispy_forms",
     "uploader.apps.UploaderConfig",
-    "djcelery_email",
+    # "djcelery_email",
     "ckeditor",
     "drf_yasg",
 ]
@@ -367,7 +367,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {
         "file": {
-            "level": "ERROR",
+            "level": "DEBUG",
             "class": "logging.FileHandler",
             "filename": error_filename,
         },
@@ -375,7 +375,7 @@ LOGGING = {
     "loggers": {
         "django": {
             "handlers": ["file"],
-            "level": "ERROR",
+            "level": "DEBUG",
             "propagate": True,
         },
     },
@@ -409,6 +409,9 @@ SESSION_CACHE_ALIAS = "default"
 
 # CELERY STUFF
 BROKER_URL = REDIS_LOCATION
+CELERY_BROKER_URL = REDIS_LOCATION
+# CELERY_IMPORTS = ['files.tasks']
+# CELERY_IMPORTS = ("encode_media", "chunkize_media", "produce_sprite_from_video", "create_hls", "check_running_states", "check_media_states", "check_pending_states", "check_missing_profiles", "clear_sessions", "save_user_action", "get_list_of_popular_media", "update_listings_thumbnails", "remove_media_file")
 CELERY_RESULT_BACKEND = BROKER_URL
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_TASK_SERIALIZER = "json"

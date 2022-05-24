@@ -42,11 +42,12 @@ services:
             context: .
             dockerfile: Dockerfile
         environment:
-            ENABLE_BEAT: 'yes'
+            ENABLE_CELERY_BEAT: 'yes'
         volumes:
             - ./:/home/mediacms.io/mediacms/
         depends_on:
             - redis
+        restart: always
     celery_worker:
         build: 
             context: .
@@ -57,9 +58,9 @@ services:
             replicas: 1
         volumes:
             - ./:/home/mediacms.io/mediacms/
-        # depends_on:
-        #     - web
-        #     - redis
+        depends_on:
+            - web
+        restart: always
 volumes:
     www:
 

@@ -1,0 +1,86 @@
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: local-settings
+#   namespace: gic3
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   storageClassName: longhorn
+#   resources:
+#     requests:
+#       storage: 10Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: gic3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: registry.deti:5000/webgic3
+        imagePullPolicy: Always
+        env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: prod-db-secret
+                key: username 
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: prod-db-secret
+                key: password
+          #TODO maybe passar para configmap isto? 
+          - name: POSTGRES_HOST
+            value: postgres-svc
+          - name: REDIS_LOCATION
+            value: redis-svc   
+        ports:
+          - name: web
+            containerPort: 80
+          - name: uwsgi
+            containerPort: 9000
+      #   volumeMounts:
+      #        - name: local-settings
+      #          mountPath: /mediacmsfiles/deploy/local-settings.py
+      #          subPath: local-settings.py
+      # volumes:
+      #   - name: local-settings
+      #     configMap:
+      #       name: local-settings
+      #       items:
+      #         - key: local_settings.py
+      #           path: local-settings.py
+
+# Create Service for APP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-svc
+  namespace: gic3
+spec:
+  ports:
+  - name: uwsgi
+    port: 9000
+    targetPort: 9000
+  - name: web
+    port: 80
+    targetPort: 80
+  selector:
+    app: web
+
+
+
+

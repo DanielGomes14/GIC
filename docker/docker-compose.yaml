@@ -26,13 +26,14 @@ services:
             dockerfile: Dockerfile
         deploy:
             replicas: 1
+        environment:
+            ENABLE_UWSGI: 'yes'
+            ADMIN_USER: 'admin'
+            ADMIN_EMAIL: 'admin@localhost'
         ports:
             - 9000:9000
         volumes:
             - ./:/home/mediacms.io/mediacms/
-        environment:
-            ADMIN_USER: 'admin'
-            ADMIN_EMAIL: 'admin@localhost'
         depends_on:
             - redis
             - db
@@ -40,8 +41,8 @@ services:
         build: 
             context: .
             dockerfile: Dockerfile
-        command: celery -A cms beat -l info
-        # command: celery -A files beat -l info
+        environment:
+            ENABLE_BEAT: 'yes'
         volumes:
             - ./:/home/mediacms.io/mediacms/
         depends_on:
@@ -50,15 +51,15 @@ services:
         build: 
             context: .
             dockerfile: Dockerfile
-        command: celery -A cms worker -l info
-        # command: celery -A files worker -l info
+        environment:
+            ENABLE_CELERY_WORKER: 'yes'
         deploy:
             replicas: 1
         volumes:
             - ./:/home/mediacms.io/mediacms/
-        depends_on:
-            - web
-            - redis
+        # depends_on:
+        #     - web
+        #     - redis
 volumes:
     www:
 

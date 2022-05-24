@@ -40,4 +40,4 @@ EXPOSE 9000 80
 COPY entrypoint.sh .
 RUN chmod +x ./entrypoint.sh
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["/home/mediacms.io/mediacms/entrypoint.sh"]

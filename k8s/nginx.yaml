@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-static-pvc
+  namespace: gic3
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 10Mi
+# Create nginx deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: gic3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - image: registry.deti:5000/nginxgic3
+          name: nginx
+          ports:
+            - containerPort: 80
+          resources: {}
+          volumeMounts:
+            - name: nginx-static
+              mountPath: /var/www/static
+            - name: nginx-conf
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+
+      restartPolicy: Always
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: nginx-static
+          persistentVolumeClaim:
+            claimName: nginx-static-pvc
+
+
+# Create Service for APP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-svc
+  namespace: gic3
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: nginx

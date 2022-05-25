@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: celeryworker
-  namespace: mediacms
+  namespace: gic3
 spec:
   selector:
     matchLabels:
@@ -17,7 +17,7 @@ spec:
         image: registry.deti:5000/celeryworkergic3
         imagePullPolicy: Always   
         volumeMounts:
-        - mountPath: /home/mediacms.io/mediacms/static/media_files
+        - mountPath: /home/mediacms.io/mediacms/media_files
           name: mediafiles
           subPath: media_files
       volumes:

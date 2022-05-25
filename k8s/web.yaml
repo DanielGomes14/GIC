@@ -43,6 +43,7 @@ spec:
             name: staticfiles
           - mountPath: /home/mediacms.io/mediacms/media_files
             name: mediafiles
+  
       volumes:
         - name: staticfiles
           persistentVolumeClaim:

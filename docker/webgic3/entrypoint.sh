@@ -18,8 +18,6 @@ while ! nc -z redis 6379; do
 done
 echo "Redis started"
 
-cd mediacmsfiles
-
 mkdir logs
 mkdir pids
 
@@ -36,9 +34,10 @@ EXISTING_INSTALLATION=`echo "from users.models import User; print(User.objects.e
 if [ "$EXISTING_INSTALLATION" = "True" ]; then 
 echo "Loaddata has already run"
 else
-# echo "Running loaddata and creating admin user"
-# python manage.py loaddata fixtures/encoding_profiles.json
-# python manage.py loaddata fixtures/categories.json
+
+echo "Running loaddata and creating admin user"
+python manage.py loaddata fixtures/encoding_profiles.json
+ python manage.py loaddata fixtures/categories.json
 
 # post_save, needs redis to succeed (ie. migrate depends on redis)
 DJANGO_SUPERUSER_PASSWORD=$ADMIN_PASSWORD python manage.py createsuperuser \

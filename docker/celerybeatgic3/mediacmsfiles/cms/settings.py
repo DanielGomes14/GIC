@@ -204,10 +204,10 @@ CHUNKS_DONE_PARAM_NAME = "done"
 FILE_STORAGE = "django.core.files.storage.DefaultStorage"
 
 X_FRAME_OPTIONS = "ALLOWALL"
-# EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
-# CELERY_EMAIL_TASK_CONFIG = {
-#     "queue": "short_tasks",
-# }
+EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
+CELERY_EMAIL_TASK_CONFIG = {
+    "queue": "short_tasks",
+}
 
 POST_UPLOAD_AUTHOR_MESSAGE_UNLISTED_NO_COMMENTARY = ""
 # a message to be shown on the author of a media file and only
@@ -293,7 +293,7 @@ INSTALLED_APPS = [
     "mptt",
     "crispy_forms",
     "uploader.apps.UploaderConfig",
-    # "djcelery_email",
+    "djcelery_email",
     "ckeditor",
     "drf_yasg",
 ]
@@ -399,8 +399,8 @@ CACHES = {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": REDIS_LOCATION,
         "OPTIONS": {
-            "PASSWORD" : "a-very-complex-password-here",
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD" : "a-very-complex-password-here",
         },
     }
 }
@@ -409,8 +409,8 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 
 # CELERY STUFF
-BROKER_URL = REDIS_LOCATION
-CELERY_BROKER_URL = REDIS_LOCATION
+BROKER_URL = 'redis://:a-very-complex-password-here@redis:6379/1'
+CELERY_BROKER_URL = 'redis://:a-very-complex-password-here@redis:6379/1'
 # CELERY_IMPORTS = ['files.tasks']
 # CELERY_IMPORTS = ("encode_media", "chunkize_media", "produce_sprite_from_video", "create_hls", "check_running_states", "check_media_states", "check_pending_states", "check_missing_profiles", "clear_sessions", "save_user_action", "get_list_of_popular_media", "update_listings_thumbnails", "remove_media_file")
 CELERY_RESULT_BACKEND = BROKER_URL

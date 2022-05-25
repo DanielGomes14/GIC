@@ -409,8 +409,8 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 
 # CELERY STUFF
-BROKER_URL = REDIS_LOCATION
-CELERY_BROKER_URL = REDIS_LOCATION
+BROKER_URL = 'redis://:a-very-complex-password-here@redis:6379/1'
+CELERY_BROKER_URL = 'redis://:a-very-complex-password-here@redis:6379/1'
 # CELERY_IMPORTS = ['files.tasks']
 # CELERY_IMPORTS = ("encode_media", "chunkize_media", "produce_sprite_from_video", "create_hls", "check_running_states", "check_media_states", "check_pending_states", "check_missing_profiles", "clear_sessions", "save_user_action", "get_list_of_popular_media", "update_listings_thumbnails", "remove_media_file")
 CELERY_RESULT_BACKEND = BROKER_URL

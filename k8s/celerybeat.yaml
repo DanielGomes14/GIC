@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celerybeat
+  namespace: gic3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: celerybeat
+  template:
+    metadata:
+      labels:
+        app: celerybeat
+    spec:
+      containers:
+      - name: celerybeat
+        image: registry.deti:5000/celerybeatgic3
+        imagePullPolicy: Always   
+      

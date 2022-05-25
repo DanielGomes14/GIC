@@ -1,15 +1,15 @@
-# apiVersion: v1
-# kind: PersistentVolumeClaim
-# metadata:
-#   name: local-settings
-#   namespace: gic3
-# spec:
-#   accessModes:
-#     - ReadWriteOnce
-#   storageClassName: longhorn
-#   resources:
-#     requests:
-#       storage: 10Mi
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mediafilespvc
+  namespace: gic3
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 40Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -54,10 +54,16 @@ spec:
         volumeMounts:
           - mountPath: /home/mediacms.io/mediacms/static
             name: staticfiles
+          - mountPath: /home/mediacms.io/mediacms/static/media_files
+            name: mediafiles
+            subPath: media_files
       volumes:
         - name: staticfiles
           persistentVolumeClaim:
             claimName: staticfilespvc
+        - name: mediafiles
+          persistentVolumeClaim:
+              claimName: mediafilespvc 
 
 # Create Service for APP
 ---

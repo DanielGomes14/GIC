@@ -6,7 +6,7 @@ from celery import Celery
 from django.conf import settings
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cms.settings")
-app = Celery("cms", broker='redis://redis:6379/1')
+app = Celery("cms", broker=settings.BROKER_URL)
 
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()

@@ -3,19 +3,16 @@
 
 
 echo "Waiting for Postgres to Start..."
-
-while ! nc -z postgres-svc 5432; do
+while ! nc -z db 5432; do
   sleep 0.1
 done
 echo "Postgres started"
 
 
 echo "Waiting for Redis is running..."
-
-
-#while ! nc -z redis 6379; do
-#  sleep 0.1
-#done
+while ! nc -z redis 6379; do
+ sleep 0.1
+done
 echo "Redis started"
 
 cd mediacmsfiles

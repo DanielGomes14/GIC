@@ -11,6 +11,19 @@ spec:
     requests:
       storage: 1Gi
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mediafilespvc
+  namespace: gic3
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 40Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -37,8 +50,8 @@ spec:
           volumeMounts:
             - name: staticfiles
               mountPath: /home/mediacms.io/mediacms/static
-            - name: mediafilespvc
-              mountPath: /home/mediacms.io/mediacms/static/media_files
+            - name: mediafiles
+              mountPath: /home/mediacms.io/mediacms/media_files
             - name: nginx-conf
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf

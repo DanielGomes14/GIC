@@ -399,6 +399,7 @@ CACHES = {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": REDIS_LOCATION,
         "OPTIONS": {
+            "PASSWORD" : "a-very-complex-password-here",
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
     }

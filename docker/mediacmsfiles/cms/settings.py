@@ -400,6 +400,7 @@ CACHES = {
         "LOCATION": REDIS_LOCATION,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD" : "a-very-complex-password-here",
         },
     }
 }

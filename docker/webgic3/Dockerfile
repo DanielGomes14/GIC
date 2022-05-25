@@ -15,7 +15,7 @@ RUN pip install -r requirements.txt
 #Setup working directory
 WORKDIR /home/mediacms.io/mediacms
 ADD ./mediacmsfiles /home/mediacms.io/mediacms
-RUN ls -ll
+
 RUN apt-get update && apt-get -y dist-upgrade
 RUN apt install -y netcat
 

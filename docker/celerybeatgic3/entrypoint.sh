@@ -15,11 +15,8 @@ cd mediacmsfiles
 mkdir logs
 mkdir pids
 
-
-
-
 echo "Enabling celery-beat scheduling server"
-celery beat -A cms --pidfile=/home/mediacms.io/mediacms/pids/beat.pid --logfile=/home/mediacms.io/mediacms/logs/beat.log --loglevel=DEBUG --workdir=/home/mediacms.io/mediacms -b 'redis://default:a-very-complex-password@redis:6379/1'
+celery beat -A cms --pidfile=/home/mediacms.io/mediacms/pids/beat.pid --logfile=/home/mediacms.io/mediacms/logs/beat.log --loglevel=DEBUG --workdir=/home/mediacms.io/mediacms -b 'redis://:a-very-complex-password@redis:6379/1'
 
 
 

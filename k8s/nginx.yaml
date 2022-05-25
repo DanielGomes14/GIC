@@ -37,6 +37,8 @@ spec:
           volumeMounts:
             - name: staticfiles
               mountPath: /home/mediacms.io/mediacms/static
+            - name: mediafilespvc
+              mountPath: /home/mediacms.io/mediacms/static/media_files
             - name: nginx-conf
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
@@ -53,6 +55,9 @@ spec:
         - name: staticfiles
           persistentVolumeClaim:
             claimName: staticfilespvc
+        - name: mediafiles
+          persistentVolumeClaim:
+              claimName: mediafilespvc 
 
 
 # Create Service for APP

@@ -1,16 +1,15 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nginx-static-pvc
+  name: staticfilespvc
   namespace: gic3
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   storageClassName: longhorn
   resources:
     requests:
-      storage: 10Mi
-# Create nginx deployment
+      storage: 1Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -36,8 +35,8 @@ spec:
             - containerPort: 80
           resources: {}
           volumeMounts:
-            - name: nginx-static
-              mountPath: /var/www/static
+            - name: staticfiles
+              mountPath: /home/mediacms.io/mediacms/static
             - name: nginx-conf
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
@@ -51,9 +50,9 @@ spec:
             items:
               - key: nginx.conf
                 path: nginx.conf
-        - name: nginx-static
+        - name: staticfiles
           persistentVolumeClaim:
-            claimName: nginx-static-pvc
+            claimName: staticfilespvc
 
 
 # Create Service for APP

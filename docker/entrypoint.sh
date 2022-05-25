@@ -22,6 +22,7 @@ cd mediacmsfiles
 
 mkdir logs
 mkdir pids
+mkdir -p media_files/hls
 
 if [ X"$ENABLE_UWSGI" = X"yes" ] ; then
     #TODO: Remove secrets from here!!
@@ -36,9 +37,9 @@ if [ X"$ENABLE_UWSGI" = X"yes" ] ; then
     if [ "$EXISTING_INSTALLATION" = "True" ]; then 
         echo "Loaddata has already run"
     else
-        # echo "Running loaddata and creating admin user"
-        # python manage.py loaddata fixtures/encoding_profiles.json
-        # python manage.py loaddata fixtures/categories.json
+        echo "Running loaddata and creating admin user"
+        python manage.py loaddata fixtures/encoding_profiles.json
+        python manage.py loaddata fixtures/categories.json
 
         # post_save, needs redis to succeed (ie. migrate depends on redis)
         DJANGO_SUPERUSER_PASSWORD=$ADMIN_PASSWORD python manage.py createsuperuser \
@@ -65,8 +66,9 @@ if [ X"$ENABLE_CELERY_WORKER" = X"yes" ] ; then
     echo "Enabling celery-short task worker"
     echo "Enabling celery-long task worker"
     
-    celery worker -A cms --pidfile=/home/mediacms.io/mediacms/mediacmsfiles/pids/%h-%I.pid --logfile=/home/mediacms.io/mediacms/mediacmsfiles/logs/%h-%I.log --loglevel=DEBUG --soft-time-limit=300 -c5 --workdir=/home/mediacms.io/mediacms/mediacmsfiles -Q short_tasks -b 'redis://redis:6379/1'
     celery worker -A cms --pidfile=/home/mediacms.io/mediacms/mediacmsfiles/pids/%h-%I.pid --logfile=/home/mediacms.io/mediacms/mediacmsfiles/logs/%h-%I.log --loglevel=DEBUG -Ofair --prefetch-multiplier=1 --workdir=/home/mediacms.io/mediacms/mediacmsfiles -Q long_tasks -b 'redis://redis:6379/1'
+    celery worker -A cms --pidfile=/home/mediacms.io/mediacms/mediacmsfiles/pids/%h-%I.pid --logfile=/home/mediacms.io/mediacms/mediacmsfiles/logs/%h-%I.log --loglevel=DEBUG --soft-time-limit=300 -c10 --workdir=/home/mediacms.io/mediacms/mediacmsfiles -Q short_tasks -b 'redis://redis:6379/1'
+
 fi
 
 tail -f /dev/null

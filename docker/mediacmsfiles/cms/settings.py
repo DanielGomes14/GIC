@@ -204,10 +204,10 @@ CHUNKS_DONE_PARAM_NAME = "done"
 FILE_STORAGE = "django.core.files.storage.DefaultStorage"
 
 X_FRAME_OPTIONS = "ALLOWALL"
-# EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
-# CELERY_EMAIL_TASK_CONFIG = {
-#     "queue": "short_tasks",
-# }
+EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
+CELERY_EMAIL_TASK_CONFIG = {
+    "queue": "short_tasks",
+}
 
 POST_UPLOAD_AUTHOR_MESSAGE_UNLISTED_NO_COMMENTARY = ""
 # a message to be shown on the author of a media file and only
@@ -293,7 +293,7 @@ INSTALLED_APPS = [
     "mptt",
     "crispy_forms",
     "uploader.apps.UploaderConfig",
-    # "djcelery_email",
+    "djcelery_email",
     "ckeditor",
     "drf_yasg",
 ]

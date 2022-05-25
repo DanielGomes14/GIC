@@ -53,5 +53,5 @@ echo "Running collectstatic"
 python manage.py collectstatic --noinput
 
 echo "Enabling uwsgi app server"
-uwsgi --ini /home/mediacms.io/mediacms/mediacmsfiles/deploy/docker/uwsgi.ini
+uwsgi --ini /home/mediacms.io/mediacms/deploy/docker/uwsgi.ini
 

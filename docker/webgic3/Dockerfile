@@ -14,10 +14,15 @@ RUN pip install -r requirements.txt
 
 #Setup working directory
 WORKDIR /home/mediacms.io/mediacms
-# COPY . /home/mediacms.io/mediacms
-
+ADD ./mediacmsfiles /home/mediacms.io/mediacms
+RUN ls -ll
 RUN apt-get update && apt-get -y dist-upgrade
 RUN apt install -y netcat
+
+# COPY mediacmsfiles/deploy/local_install/celery_long.service /etc/systemd/system/celery_long.service
+# COPY mediacmsfiles/deploy/local_install/celery_short.service /etc/systemd/system/celery_short.service
+# COPY mediacmsfiles/deploy/local_install/celery_beat.service /etc/systemd/system/celery_beat.service
+# COPY mediacmsfiles/deploy/local_install/mediacms.service /etc/systemd/system/mediacms.service 
 
 #Install Bento4
 RUN wget -q http://zebulon.bok.net/Bento4/binaries/Bento4-SDK-1-6-0-637.x86_64-unknown-linux.zip && \
@@ -37,7 +42,9 @@ RUN mkdir -p ffmpeg-tmp && \
 
 
 EXPOSE 9000 80
-COPY entrypoint.sh .
+ADD entrypoint.sh .
 RUN chmod +x ./entrypoint.sh
+
+VOLUME /static
 
 ENTRYPOINT ["/home/mediacms.io/mediacms/entrypoint.sh"]

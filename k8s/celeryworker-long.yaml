@@ -30,7 +30,12 @@ spec:
           - name: POSTGRES_HOST
             value: postgres-svc
           - name: REDIS_LOCATION
-            value: redis      
+            value: redis  
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: prod-redis-secret
+                key: password      
         volumeMounts:
         - mountPath: /home/mediacms.io/mediacms/media_files
           name: mediafiles

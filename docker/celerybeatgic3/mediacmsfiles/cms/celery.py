@@ -5,8 +5,10 @@ import os
 from celery import Celery
 from django.conf import settings
 
+
+REDIS_PWD = os.getenv('REDIS_PASSWORD')
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cms.settings")
-app = Celery("cms", broker='redis://default:a-very-complex-password-here@redis:6379/1')
+app = Celery("cms", broker=f'redis://:{REDIS_PWD}@redis:6379/1')
 
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()

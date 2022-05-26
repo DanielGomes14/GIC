@@ -67,6 +67,10 @@ data:
             location /media {
                 alias /home/mediacms.io/mediacms/media_files;
             }
+            location /demo {
+                root /home/mediacms.io/mediacms/static/ ;
+                index index.html;
+            }
 
 
             location / {

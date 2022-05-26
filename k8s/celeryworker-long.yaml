@@ -44,8 +44,14 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
           - topologyKey: kubernetes.io/hostname
             labelSelector:
-              matchLabels:
-                app: web  
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - web
+                - api
+
+
       volumes:
         - name: mediafiles
           persistentVolumeClaim:

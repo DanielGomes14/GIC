@@ -38,8 +38,6 @@ spec:
                 name: prod-redis-secret
                 key: password   
         ports:
-          - name: web
-            containerPort: 80
           - name: uwsgi
             containerPort: 9000
         volumeMounts:
@@ -68,9 +66,6 @@ spec:
   - name: uwsgi
     port: 9000
     targetPort: 9000
-  - name: web
-    port: 80
-    targetPort: 80
   selector:
     app: web
 

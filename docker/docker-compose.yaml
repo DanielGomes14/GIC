@@ -8,7 +8,7 @@ services:
             - 80:80
         volumes:
             - ./mediacmsfiles/static:/var/www/static
-            - ./mediacmsfiles/media_files:/var/www/static/media_files
+            - ./mediacmsfiles/media_files:/var/www/media_files
     db:
         build: 
             context: .

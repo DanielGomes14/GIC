@@ -16,5 +16,21 @@ spec:
       containers:
       - name: celerybeat
         image: registry.deti:5000/celerybeatgic3
-        imagePullPolicy: Always   
+        imagePullPolicy: Always
+        env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: prod-db-secret
+                key: username 
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: prod-db-secret
+                key: password
+          #TODO maybe passar para configmap isto? 
+          - name: POSTGRES_HOST
+            value: postgres-svc
+          - name: REDIS_LOCATION
+            value: redis    
       

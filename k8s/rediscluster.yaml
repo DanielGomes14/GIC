@@ -38,6 +38,14 @@ spec:
               echo "master found : $MASTER, updating redis.conf"
               echo "slaveof $MASTER 6379" >> /etc/redis/redis.conf
             fi
+            echo "masterauth $REDIS_PASSWORD" >> /etc/redis/redis.conf
+            echo "requirepass $REDIS_PASSWORD" >> /etc/redis/redis.conf
+        env:
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: prod-redis-secret
+                key: password
         volumeMounts:
         - name: redis-config
           mountPath: /etc/redis/

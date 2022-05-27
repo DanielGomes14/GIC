@@ -50,6 +50,7 @@
 - Create hls folder
     
  <code> cd media_files </code>
+    
  <code> mkdir hls </code>
     
 11. Reload NGINX

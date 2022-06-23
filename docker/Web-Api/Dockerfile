@@ -9,7 +9,7 @@ SHELL ["/bin/bash", "-c"]
 RUN mkdir -p /home/mediacms.io/mediacms/{logs} && cd /home/mediacms.io
 #RUN apt-get install python3-dev && apt-get install gcc && libc-dev
 # Install dependencies:
-COPY mediacmsfiles/requirements.txt .
+COPY ../mediacmsfiles/requirements.txt .
 RUN pip install -r requirements.txt
 
 #Setup working directory

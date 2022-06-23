@@ -72,6 +72,12 @@ data:
                 index index.html;
             }
 
+            location /nginx_status {
+                allow all;
+                access_log on;
+                stub_status on;
+            }
+
 
             location / {
                 add_header 'Access-Control-Allow-Origin' '*';

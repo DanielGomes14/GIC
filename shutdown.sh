@@ -5,8 +5,8 @@ K8S_DIR='k8s'
 
 ### secrets ###
 
-kubectl delete secret prod-db-secret
-kubectl delete secret prod-redis-secret
+kubectl delete secret  prod-db-secret -n gic3
+kubectl delete secret  prod-redis-secret -n gic3
 
 
 ### config maps ###

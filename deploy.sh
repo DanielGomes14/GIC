@@ -2,7 +2,7 @@
 
 NAMESPACE='gic3'
 K8S_DIR='k8s'
-MEDIACMS_DIR='docker/mediacmsfiles'
+MEDIACMS_PATH='/home/mediacms.io/mediacms'
 
 # config maps
 kubectl apply -n $NAMESPACE -f "$K8S_DIR/nginx-configmap.yaml"
@@ -45,8 +45,8 @@ do
 done
 echo "WEB_POD_NAME=$WEB_POD_NAME"
 
-kubectl exec -n $NAMESPACE -it $WEB_POD_NAME -- /bin/bash -c "cp -r /home/mediacms.io/mediacms/tmpstatic/* /home/mediacms.io/mediacms/static"
-kubectl exec -n $NAMESPACE -it $NGINX_POD_NAME -- /bin/sh -c "mkdir -p /home/mediacms.io/mediacms/media_files/hls; nginx -s reload"
+kubectl exec -n $NAMESPACE -it $WEB_POD_NAME -- /bin/bash -c "cp -r $MEDIACMS_PATH/tmpstatic/* $MEDIACMS_PATH/static"
+kubectl exec -n $NAMESPACE -it $NGINX_POD_NAME -- /bin/sh -c "mkdir -p $MEDIACMS_PATH/media_files/hls; nginx -s reload"
 
 kubectl apply -n $NAMESPACE -f "$K8S_DIR/celerybeat.yaml"
 kubectl apply -n $NAMESPACE -f "$K8S_DIR/celeryworker-short.yaml"

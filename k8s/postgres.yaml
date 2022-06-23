@@ -37,17 +37,39 @@ spec:
         volumeMounts:
           - mountPath: /data
             name: pg-data
-      
         resources:
           limits:
             memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: 5432
+        - name: psql
+          containerPort: 5432
+
+      - name: postgres-exporter
+        image: quay.io/prometheuscommunity/postgres-exporter
+        imagePullPolicy: Always
+        env:
+          - name: DATA_SOURCE_URI
+            value: postgres-svc?sslmode=disable
+          - name: DATA_SOURCE_PASS
+            valueFrom:
+              secretKeyRef:
+                name: prod-db-secret
+                key: password  
+          - name: DATA_SOURCE_USER
+            valueFrom:
+              secretKeyRef:
+                name: prod-db-secret
+                key: username 
+        ports:
+        - name: exporter
+          containerPort: 9187
       volumes:
         - name: pg-data
           persistentVolumeClaim:
             claimName: pg-data-pvc
+
+    
 
 
 ---
@@ -76,7 +98,11 @@ metadata:
     app: postgres
 spec:
   ports:
-      - port: 5432
+      - name: psql
+        port: 5432
         targetPort: 5432
+      - name: exporter
+        port: 9187
+        targetPort: 9187
   selector:
       app: postgres

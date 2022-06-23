@@ -50,7 +50,7 @@ spec:
         imagePullPolicy: Always
         env:
           - name: DATA_SOURCE_URI
-            value: postgres-svc?sslmode=disable
+            value: postgres-svc:5432/mediacms?sslmode=disable
           - name: DATA_SOURCE_PASS
             valueFrom:
               secretKeyRef:

@@ -51,6 +51,3 @@ kubectl exec -n $NAMESPACE -it $NGINX_POD_NAME -- /bin/sh -c "mkdir -p $MEDIACMS
 kubectl apply -n $NAMESPACE -f "$K8S_DIR/celerybeat.yaml"
 kubectl apply -n $NAMESPACE -f "$K8S_DIR/celeryworker-short.yaml"
 kubectl apply -n $NAMESPACE -f "$K8S_DIR/celeryworker-long.yaml"
-
-kubectl apply -n $NAMESPACE -f "$K8S_DIR/prometheus-role.yaml"
-kubectl apply -n $NAMESPACE -f "$K8S_DIR/prometheus.yaml"

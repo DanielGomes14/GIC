@@ -61,10 +61,6 @@ do
     sleep 1
 done
 
-# copy tmpstatic to static in web pod
-echo "copying static files..."
-kubectl exec -n $NAMESPACE -it $WEB_POD_NAME -- /bin/bash -c "cp -r $MEDIACMS_PATH/tmpstatic/* $MEDIACMS_PATH/static"
-echo -ne ""\\r
 # create media_files/hls path in nginx pod
 # reload nginx
 kubectl exec -n $NAMESPACE -it $NGINX_POD_NAME -- /bin/sh -c "mkdir -p $MEDIACMS_PATH/media_files/hls; nginx -s reload"
@@ -83,6 +79,11 @@ do
     WEB_POD_NAME=$(kubectl get pods $GET_PODS_RUNNING -n $NAMESPACE | grep -m1 web)
     sleep 1
 done
+
+# copy tmpstatic to static in web pod
+echo "copying static files..."
+kubectl exec -n $NAMESPACE -it $WEB_POD_NAME -- /bin/bash -c "cp -r $MEDIACMS_PATH/tmpstatic/* $MEDIACMS_PATH/static"
+echo -ne ""\\r
 
 
 #### celery deployments ####

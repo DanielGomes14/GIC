@@ -5,12 +5,18 @@ K8S_DIR='k8s'
 MEDIACMS_DIR='docker/mediacmsfiles'
 
 # config maps
-#kubectl create configmap nginx-conf --from-file="$K8S_DIR/nginx-configmap.yaml"
-#kubectl create configmap redis-config --from-file="$K8S_DIR/redisconfigmap.yaml"
+kubectl apply -n $NAMESPACE -f "$K8S_DIR/nginx-configmap.yaml"
+kubectl apply -n $NAMESPACE -f "$K8S_DIR/redisconfigmap.yaml"
+kubectl apply -n $NAMESPACE -f "$K8S_DIR/prometheus-configmap.yaml"
+
+# secrets
+bash "./$K8S_DIR/secret.sh"
 
 # deployments
+kubectl apply -n $NAMESPACE -f "$K8S_DIR/ingress.yaml"
 
 kubectl apply -n $NAMESPACE -f "$K8S_DIR/postgres.yaml"
+
 kubectl apply -n $NAMESPACE -f "$K8S_DIR/rediscluster.yaml"
 
 kubectl exec -n $NAMESPACE -it redis-0 -- /bin/sh -c "redis-cli -a EMeHRnIthT6JcFYFbnVpNscr4mhds3IT monitor &"
@@ -19,8 +25,25 @@ kubectl apply -n $NAMESPACE -f "$K8S_DIR/nginx.yaml"
 kubectl apply -n $NAMESPACE -f "$K8S_DIR/api.yaml"
 kubectl apply -n $NAMESPACE -f "$K8S_DIR/web.yaml"
 
-NGINX_POD_NAME=$(kubectl get pods --no-headers -o custom-columns=":metadata.name" -n gic3 | grep -m1 nginx)
-WEB_POD_NAME=$(kubectl get pods --no-headers -o custom-columns=":metadata.name" -n gic3 | grep -m1 web)
+GET_PODS_OPTIONS='--no-headers -o custom-columns=:metadata.name --field-selector=status.phase==Running'
+
+NGINX_POD_NAME=
+while [ -z "$NGINX_POD_NAME" ]
+do 
+    NGINX_POD_NAME=$(kubectl get pods $GET_PODS_OPTIONS -n $NAMESPACE | grep -m1 nginx)
+    echo -ne "waiting for nginx to start running..."\\r
+    sleep 1
+done
+echo "NGINX_POD_NAME=$NGINX_POD_NAME"
+
+WEB_POD_NAME=
+while [ -z "$WEB_POD_NAME" ]
+do 
+    WEB_POD_NAME=$(kubectl get pods $GET_PODS_OPTIONS -n $NAMESPACE | grep -m1 web)
+    echo -ne "waiting for web to start running..."\\r
+    sleep 1
+done
+echo "WEB_POD_NAME=$WEB_POD_NAME"
 
 kubectl exec -n $NAMESPACE -it $WEB_POD_NAME -- /bin/bash -c "cp -r /home/mediacms.io/mediacms/tmpstatic/* /home/mediacms.io/mediacms/static"
 kubectl exec -n $NAMESPACE -it $NGINX_POD_NAME -- /bin/sh -c "mkdir -p /home/mediacms.io/mediacms/media_files/hls; nginx -s reload"
@@ -29,3 +52,5 @@ kubectl apply -n $NAMESPACE -f "$K8S_DIR/celerybeat.yaml"
 kubectl apply -n $NAMESPACE -f "$K8S_DIR/celeryworker-short.yaml"
 kubectl apply -n $NAMESPACE -f "$K8S_DIR/celeryworker-long.yaml"
 
+kubectl apply -n $NAMESPACE -f "$K8S_DIR/prometheus-role.yaml"
+kubectl apply -n $NAMESPACE -f "$K8S_DIR/prometheus.yaml"

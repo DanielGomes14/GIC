@@ -380,19 +380,23 @@ LOGGING = {
         },
     },
 }
+POSTGRES_USER = os.getenv('POSTGRES_USER')
+POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
+POSTGRES_HOST = os.getenv('POSTGRES_HOST')
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "mediacms",
-        "HOST": "db",
+        "HOST": POSTGRES_HOST,
         "PORT": "5432",
-        "USER": "mediacms",
-        "PASSWORD": "mediacms",
+        "USER": POSTGRES_USER,
+        "PASSWORD": POSTGRES_PASSWORD,
     }
 }
 
 
+REDIS_PWD = os.getenv('REDIS_PASSWORD')
 REDIS_LOCATION = "redis://redis:6379/1"
 CACHES = {
     "default": {
@@ -400,7 +404,7 @@ CACHES = {
         "LOCATION": REDIS_LOCATION,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "PASSWORD" : "a-very-complex-password-here",
+            "PASSWORD" : REDIS_PWD
         },
     }
 }
@@ -409,8 +413,8 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 
 # CELERY STUFF
-BROKER_URL = 'redis://:a-very-complex-password-here@redis:6379/1'
-CELERY_BROKER_URL = 'redis://:a-very-complex-password-here@redis:6379/1'
+BROKER_URL = f'redis://:{REDIS_PWD}@redis:6379/1'
+CELERY_BROKER_URL = f'redis://:{REDIS_PWD}@redis:6379/1'
 # CELERY_IMPORTS = ['files.tasks']
 # CELERY_IMPORTS = ("encode_media", "chunkize_media", "produce_sprite_from_video", "create_hls", "check_running_states", "check_media_states", "check_pending_states", "check_missing_profiles", "clear_sessions", "save_user_action", "get_list_of_popular_media", "update_listings_thumbnails", "remove_media_file")
 CELERY_RESULT_BACKEND = BROKER_URL

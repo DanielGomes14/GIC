@@ -9,7 +9,7 @@ SHELL ["/bin/bash", "-c"]
 RUN mkdir -p /home/mediacms.io/mediacms/{logs} && cd /home/mediacms.io
 #RUN apt-get install python3-dev && apt-get install gcc && libc-dev
 # Install dependencies:
-COPY requirements.txt .
+COPY mediacmsfiles/requirements.txt .
 RUN pip install -r requirements.txt
 
 #Setup working directory
@@ -18,11 +18,6 @@ ADD ./mediacmsfiles /home/mediacms.io/mediacms
 
 RUN apt-get update && apt-get -y dist-upgrade
 RUN apt install -y netcat
-
-# COPY mediacmsfiles/deploy/local_install/celery_long.service /etc/systemd/system/celery_long.service
-# COPY mediacmsfiles/deploy/local_install/celery_short.service /etc/systemd/system/celery_short.service
-# COPY mediacmsfiles/deploy/local_install/celery_beat.service /etc/systemd/system/celery_beat.service
-# COPY mediacmsfiles/deploy/local_install/mediacms.service /etc/systemd/system/mediacms.service 
 
 #Install Bento4
 RUN wget -q http://zebulon.bok.net/Bento4/binaries/Bento4-SDK-1-6-0-637.x86_64-unknown-linux.zip && \

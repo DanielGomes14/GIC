@@ -1,0 +1,64 @@
+name: Push to Registry
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: self-hosted
+    
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build Postgres
+        run: |
+          docker build ./docker/postgres -t registry.deti:5000/postgresgic3:${GITHUB_SHA}
+          docker build ./docker/postgres -t registry.deti:5000/postgresgic3:latest
+
+      - name: Build Redis
+        run: |
+          docker build ./docker/redis -t registry.deti:5000/redisgic3:${GITHUB_SHA}
+          docker build ./docker/redis -t registry.deti:5000/redisgic3:latest
+      
+      - name: Build NGINX
+        run: |
+          docker build ./docker/nginx -t registry.deti:5000/nginxgic3:${GITHUB_SHA}
+          docker build ./docker/nginx -t registry.deti:5000/nginxgic3:latest
+          
+      - name: Build Web-Api
+        run: |
+          docker build ./docker/Web-Api -t registry.deti:5000/webgic3:${GITHUB_SHA}
+          docker build ./docker/Web-Api -t registry.deti:5000/webgic3:latest
+          
+      - name: Build Celery Beat
+        run: |
+          docker build ./docker/CeleryBeat -t registry.deti:5000/celerybeatgic3:${GITHUB_SHA}
+          docker build ./docker/CeleryBeat -t registry.deti:5000/celerybeatgic3:latest
+      
+      - name: Build Worker Short
+        run: |
+          docker build ./docker/CeleryWorkerShort -t registry.deti:5000/celeryworkershortgic3:${GITHUB_SHA}
+          docker build ./docker/CeleryWorkerShort -t registry.deti:5000/celeryworkershortgic3:latest
+          
+      - name: Build Worker Long
+        run: |
+          docker build ./docker/CeleryWorkerLong -t registry.deti:5000/celeryworkerlonggic3:${GITHUB_SHA}
+          docker build ./docker/CeleryWorkerLong -t registry.deti:5000/celeryworkerlonggic3:latest
+          
+      - name: Push
+        run: |
+          docker push registry.deti:5000/postgresgic3:${GITHUB_SHA}
+          docker push registry.deti:5000/postgresgic3:latest
+          docker push registry.deti:5000/redisgic3:${GITHUB_SHA}
+          docker push registry.deti:5000/redisgic3:latest
+          docker push registry.deti:5000/nginxgic3:${GITHUB_SHA}
+          docker push registry.deti:5000/nginxgic3:latest
+          docker push registry.deti:5000/webgic3:${GITHUB_SHA}
+          docker push registry.deti:5000/webgic3:latest
+          docker push registry.deti:5000/celerybeatgic3:${GITHUB_SHA}
+          docker push registry.deti:5000/celerybeatgic3:latest
+          docker push registry.deti:5000/celeryworkershortgic3:${GITHUB_SHA}
+          docker push registry.deti:5000/celeryworkershortgic3:latest
+          docker push registry.deti:5000/celeryworkerlonggic3:${GITHUB_SHA}
+          docker push registry.deti:5000/celeryworkerlonggic3:latest

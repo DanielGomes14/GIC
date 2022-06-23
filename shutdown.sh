@@ -3,19 +3,20 @@
 NAMESPACE='gic3'
 K8S_DIR='k8s'
 
-### secrets ###
 
-kubectl delete secret  prod-db-secret -n gic3
-kubectl delete secret  prod-redis-secret -n gic3
+#### secrets ####
+
+kubectl delete secret prod-db-secret -n $NAMESPACE
+kubectl delete secret prod-redis-secret -n $NAMESPACE
 
 
-### config maps ###
+#### config maps ####
 
 kubectl delete -n $NAMESPACE -f "$K8S_DIR/nginx-configmap.yaml"
 kubectl delete -n $NAMESPACE -f "$K8S_DIR/redisconfigmap.yaml"
 
 
-### deployments ###
+#### deployments ####
 
 kubectl delete -n $NAMESPACE -f "$K8S_DIR/ingress.yaml"
 kubectl delete -n $NAMESPACE -f "$K8S_DIR/postgres.yaml"

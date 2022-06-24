@@ -40,9 +40,9 @@ data:
         gzip on;
         gzip_disable "msie6";
 
-        log_format compression '$remote_addr - $remote_user [$time_local] '
+        log_format syslog_format '$remote_addr - - [$time_local] '
         '"$request" $status $body_bytes_sent '
-        '"$http_referer" "$http_user_agent" "$gzip_ratio"';
+        '"$http_referer" "$http_user_agent"';
 
         gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
 
@@ -52,8 +52,8 @@ data:
             server_name localhost;
 
             gzip on;
-            access_log /var/log/nginx/mediacms.io.access.log;
-
+            #access_log /var/log/nginx/mediacms.io.access.log;
+            access_log syslog:server=127.0.0.1:5531,facility=local7,tag=nginx,severity=info;
             error_log /var/log/nginx/mediacms.io.error.log warn;
 
             location /static {
@@ -77,7 +77,12 @@ data:
                 access_log on;
                 stub_status on;
             }
-
+            
+            location /metrics {
+                allow all;
+                access_log on;
+                stub_status on;
+            }
 
             location / {
                 add_header 'Access-Control-Allow-Origin' '*';

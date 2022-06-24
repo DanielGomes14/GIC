@@ -17,3 +17,8 @@ scrape_configs:
   static_configs:
     - targets:
       - localhost:9187  
+
+- job_name: 'nginx'
+  static_configs:
+    - targets:
+      - localhost:4040  

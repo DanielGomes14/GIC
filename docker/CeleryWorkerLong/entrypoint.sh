@@ -7,6 +7,8 @@ while ! nc -z redis 6379; do
 done
 echo "Redis started"
 
+cd mediacms
+
 mkdir logs
 mkdir pids
 mkdir -p media_files/hls

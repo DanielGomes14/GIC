@@ -1,3 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: query
+  namespace: gic3 
+data:
+  queries.yaml  : |+
+    files_uploaded:
+      values:
+        - "file_count"
+      query: "SELECT COUNT(*) AS file_count FROM files_media;"
+      master: true
+    database_size:
+      values:
+        - "mediacms_size"
+      query: "SELECT pg_database_size(pg_database.datname) as size_bytes FROM pg_database Where pg_database.datname='mediacms';"
+      master: true
+    max_video_likes:
+      values:
+        - "max_likes"
+      query: "select MAX(likes) FROM files_media;"
+      master: true
+    max_video_dislikes:
+      values:
+        - "max_dislikes"
+      query: "select MAX(dislikes) FROM files_media;"
+      master: true
+    max_video_views:
+      values:
+        - "max_views"
+      query: "select MAX(views) FROM files_media;"
+      master: true
+    failed_videos_encoding:
+      values:
+        - "fail_encodes_count"
+      query: "SELECT COUNT(*) FROM files_media WHERE encoding_status = 'fail';"
+      master: true
+
+--- 
 
 apiVersion: apps/v1
 kind: Deployment
@@ -64,7 +103,16 @@ spec:
         ports:
         - name: exporter
           containerPort: 9187
+        args:
+          - "--extend.query-path=/queries/queries.yaml"
+        volumeMounts:
+        - name: query
+          mountPath: "/queries/queries.yaml"
+          subPath: "queries.yaml"
       volumes:
+        - name: query
+          configMap:
+            name: query
         - name: pg-data
           persistentVolumeClaim:
             claimName: pg-data-pvc

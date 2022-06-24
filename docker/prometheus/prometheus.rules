@@ -1,19 +1,10 @@
 groups:
-# - name: Max Virtual Memory
-#   rules:
-#   - alert: Process virtual memory exceeded
-#     expr: sum(process_virtual_memory_bytes) > 10^12
-#     for: 1m
-#     labels:
-#       severity: High
-#     annotations:
-#       summary: Service Down
 - name: devopscube demo alert
-    rules:
-    - alert: High Pod Memory
-    expr: sum(container_memory_usage_bytes) > 1
+  rules:
+  - alert: High Number Media Files
+    expr: files_uploaded_file_count > 1
     for: 1m
     labels:
-        severity: slack
+      severity: slack
     annotations:
-        summary: High Memory Usage
+      summary: High Memory Usage

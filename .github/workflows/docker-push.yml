@@ -31,23 +31,23 @@ jobs:
           
       - name: Build Web-Api
         run: |
-          docker build . -f ./Web-Api/Dockerfile -t registry.deti:5000/webgic3:${GITHUB_SHA}
-          docker build . -f ./Web-Api/Dockerfile -t registry.deti:5000/webgic3:latest
+          docker build ./Web-Api -t registry.deti:5000/webgic3:${GITHUB_SHA}
+          docker build ./Web-Api -t registry.deti:5000/webgic3:latest
           
       - name: Build Celery Beat
         run: |
-          docker build . -f ./CeleryBeat/Dockerfile -t registry.deti:5000/celerybeatgic3:${GITHUB_SHA}
-          docker build . -f ./CeleryBeat/Dockerfile -t registry.deti:5000/celerybeatgic3:latest
+          docker build ./CeleryBeat -t registry.deti:5000/celerybeatgic3:${GITHUB_SHA}
+          docker build ./CeleryBeat -t registry.deti:5000/celerybeatgic3:latest
       
       - name: Build Worker Short
         run: |
-          docker build . -f ./CeleryWorkerShort/Dockerfile -t registry.deti:5000/celeryworkershortgic3:${GITHUB_SHA}
-          docker build . -f ./CeleryWorkerShort/Dockerfile -t registry.deti:5000/celeryworkershortgic3:latest
+          docker build ./CeleryWorkerShort -t registry.deti:5000/celeryworkershortgic3:${GITHUB_SHA}
+          docker build ./CeleryWorkerShort -t registry.deti:5000/celeryworkershortgic3:latest
           
       - name: Build Worker Long
         run: |
-          docker build . -f ./CeleryWorkerLong/Dockerfile -t registry.deti:5000/celeryworkerlonggic3:${GITHUB_SHA}
-          docker build . -f ./CeleryWorkerLong/Dockerfile -t registry.deti:5000/celeryworkerlonggic3:latest
+          docker build ./CeleryWorkerLong -t registry.deti:5000/celeryworkerlonggic3:${GITHUB_SHA}
+          docker build ./CeleryWorkerLong -t registry.deti:5000/celeryworkerlonggic3:latest
           
       - name: Push
         run: |

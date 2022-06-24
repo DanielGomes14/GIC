@@ -37,7 +37,7 @@ RUN mkdir -p ffmpeg-tmp && \
 
 
 EXPOSE 9000 80
-ADD entrypoint.sh .
+ADD CeleryWorkerShort/entrypoint.sh .
 RUN chmod +x ./entrypoint.sh
 
 VOLUME /static

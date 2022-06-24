@@ -1,0 +1,5 @@
+files_uploaded:
+  values:
+    - "file_count"
+  query: "SELECT COUNT(*) AS file_count FROM files_media;"
+  master: true

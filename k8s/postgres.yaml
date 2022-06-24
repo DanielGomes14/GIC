@@ -1,3 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: query
+  namespace: gic3 
+data:
+  queries.yaml  : |+
+    files_uploaded:
+      values:
+        - "file_count"
+      query: "SELECT COUNT(*) AS file_count FROM files_media;"
+      master: true
+
+--- 
 
 apiVersion: apps/v1
 kind: Deployment
@@ -64,7 +78,16 @@ spec:
         ports:
         - name: exporter
           containerPort: 9187
+        args:
+          - "--extend.query-path=/queries/queries.yaml"
+        volumeMounts:
+        - name: query
+          mountPath: "/queries/queries.yaml"
+          subPath: "queries.yaml"
       volumes:
+        - name: query
+          configMap:
+            name: query
         - name: pg-data
           persistentVolumeClaim:
             claimName: pg-data-pvc

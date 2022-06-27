@@ -33,8 +33,9 @@ data:
     failed_videos_encoding:
       values:
         - "fail_encodes_count"
-      query: "SELECT COUNT(*) FROM files_media WHERE encoding_status = 'fail';"
+      query: "SELECT COUNT(*) FROM files_media WHERE encoding_status = 'fail' or encoding_status = 'pending';"
       master: true
+
 
 --- 
 

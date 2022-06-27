@@ -1,0 +1,24 @@
+global:
+  scrape_interval: 20s      # time between each scrape (data pull from exporters), can be overrided in specific jobs
+  evaluation_interval: 20s  # time between each evaluation of Prometheus' alerting rules
+  # external_labels:
+  #   monitor: 'gic3-monitor'
+rule_files:
+  - prometheus.rules
+# alerting:
+#   ...
+
+scrape_configs:
+- job_name: 'prometheus'
+  static_configs:
+    - targets: ['localhost:9090']
+
+- job_name: 'postgres'
+  static_configs:
+    - targets:
+      - localhost:9187  
+
+- job_name: 'nginx'
+  static_configs:
+    - targets:
+      - localhost:4040  

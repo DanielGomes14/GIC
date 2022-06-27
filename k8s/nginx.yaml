@@ -29,6 +29,9 @@ kind: Deployment
 metadata:
   name: nginx
   namespace: gic3
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "4040"
 spec:
   replicas: 1
   selector:
@@ -57,13 +60,19 @@ spec:
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
               readOnly: true
-        - image: nginx/nginx-prometheus-exporter:0.10.0
+        # - image: nginx/nginx-prometheus-exporter:0.10.0
+        #   name: exporter
+        #   ports:
+        #     - name: exporter
+        #       containerPort: 9113
+        #   args:
+        #     - "-nginx.scrape-uri=http://localhost/nginx_status"
+        - image: quay.io/martinhelmich/prometheus-nginxlog-exporter:v1
           name: exporter
-          ports:
-            - name: exporter
-              containerPort: 9113
-          args:
-            - "-nginx.scrape-uri=http://localhost/nginx_status"
+          args: ["-config-file", "/etc/prometheus-nginxlog-exporter/config.hcl"]
+          volumeMounts:
+            - name: exporter-config
+              mountPath: /etc/prometheus-nginxlog-exporter
 
       restartPolicy: Always
       volumes:
@@ -73,6 +82,9 @@ spec:
             items:
               - key: nginx.conf
                 path: nginx.conf
+        - name: exporter-config
+          configMap:
+            name: exporter-config
         - name: staticfiles
           persistentVolumeClaim:
             claimName: staticfilespvc
@@ -94,7 +106,7 @@ spec:
     port: 80
     targetPort: 80
   - name: exporter
-    port: 9113
-    targetPort: 9113
+    port: 4040
+    targetPort: 4040
   selector:
     app: nginx
